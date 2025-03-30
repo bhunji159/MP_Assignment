@@ -17,37 +17,41 @@ import com.example.newapp.model.TodoItemFactory
 import com.example.newapp.model.TodoStatus
 
 @Composable
-fun TodoList(todoList: MutableList<Item>, modifier: Modifier = Modifier) {
+fun TodoList(todoList: MutableList<Item>, modifier: Modifier = Modifier,showAll : Boolean) {
     val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .verticalScroll(scrollState)
     ) {
         todoList.forEachIndexed { index, item ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Row {
-                    TodoCheckBox(
-                        item.status == TodoStatus.COMPLETED
-                    ) { staus ->
-                        todoList[index] =
-                            item.copy(
-                                status = if (staus) TodoStatus.COMPLETED
-                                else TodoStatus.PENDING
-                            )
+            if(!showAll and (item.status == TodoStatus.COMPLETED)){}
+            else{
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Row {
+                        TodoCheckBox(
+                            item.status == TodoStatus.COMPLETED
+                        ) { staus ->
+                            todoList[index] =
+                                item.copy(
+                                    status = if (staus) TodoStatus.COMPLETED
+                                    else TodoStatus.PENDING
+                                )
+                        }
+                        TodoItem(item = item)
                     }
-                    TodoItem(item = item)
                 }
+                Spacer(modifier = Modifier.height(10.dp))
             }
-            Spacer(modifier = Modifier.height(10.dp))
-        }
+            }
     }
 }
 
 @Preview
 @Composable
 private fun TodoListPreview() {
-    TodoList(TodoItemFactory.makeTodoList())
+    TodoList(TodoItemFactory.makeTodoList(), showAll = false)
 }
